@@ -9,6 +9,8 @@ node_modules/
 .env.development.local
 .env.test.local
 .env.production.local
+/Server/.env
+/client/.env
 
 # Logs
 logs
@@ -16,6 +18,11 @@ logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+/Server/*.log
+/Server/logs/
+error.log
+combined.log
+chatroom.log
 
 # Runtime data
 pids
@@ -26,6 +33,7 @@ pids
 # Build directories
 /build
 /dist
+/client/build
 
 # Testing
 /coverage
@@ -40,10 +48,10 @@ pids
 # Uploads and user content
 /Server/uploads/
 /uploads/
-
-# Debug logs
-/Server/*.log
-/Server/logs/
+*.mp4
+*.avi
+*.mov
+*.wmv
 
 # Temporary files
 *.tmp
