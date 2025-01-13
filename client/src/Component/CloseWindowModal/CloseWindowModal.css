@@ -1,0 +1,63 @@
+.close-window-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.close-window-modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+}
+
+.close-window-modal-content h2 {
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.close-window-modal-content p {
+    margin-bottom: 20px;
+    color: #666;
+}
+
+.close-window-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.close-window-modal-buttons button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.go-home-btn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.cancel-btn {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.go-home-btn:hover {
+    background-color: #45a049;
+}
+
+.cancel-btn:hover {
+    background-color: #e0e0e0;
+}

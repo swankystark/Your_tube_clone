@@ -1,0 +1,141 @@
+.container_videoPage {
+    height: calc(100vh - 3.4rem);
+    overflow-y: auto;
+    background-color: rgb(11, 11, 11);
+    color: white;
+}
+
+.container2_videoPage {
+    margin: 1.5rem 4.5rem;
+    display: flex;
+}
+
+.video_display_screen_videoPage {
+    width: calc(100vw - 4.5rem - 35vw);
+    padding: 1rem;
+}
+
+.video_ShowVideo_videoPage {
+    padding: 0.1rem;
+    height: 70vh;
+    background-color: black;
+    border: 1px solid rgba(37, 37, 37, 0.2);
+}
+
+.video_btns_title_VideoPage_cont {
+    border-bottom: 3px solid rgba(245, 222, 179, 0.175);
+    flex-grow: 1;
+}
+
+.video_title_VideoPage {
+    font-size: x-large;
+    margin: 0;
+    padding: 1rem 0.8rem;
+    color: white;
+}
+
+.views_date_btns_VideoPage {
+    margin: 0.5rem 1rem;
+    width: calc(100vw - 6.5rem - 35vw);
+    display: flex;
+    color: #aaa;
+}
+
+.views_videoPage {
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+}
+
+.chanel_details_videoPage {
+    border-bottom: 3px solid rgba(245, 222, 179, 0.175);
+    display: flex;
+    text-decoration: none;
+    color: aliceblue;
+    font-weight: bolder;
+    margin-top: 10px;
+}
+
+.chanel_logo_videoPage {
+    display: flex;
+    border: 1px solid rgba(0, 0, 0, 0.19);
+    width: 4rem;
+    height: 4rem;
+    margin: 0.5rem;
+    background-color: rgba(255, 255, 255, 0.667);
+    border-radius: 100%;
+}
+
+.chanel_logo_videoPage p {
+    margin: auto;
+    font-size: xx-large;
+    color: black;
+}
+
+.chanel_name_videoPage {
+    font-weight: bolder;
+    margin: auto 1rem;
+    font-size: larger;
+    color: white;
+}
+
+.comments_VideoPage {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: black;
+    color: white;
+    border-radius: 8px;
+}
+
+.comments_VideoPage h2 {
+    color: white;
+    margin-bottom: 10px;
+}
+
+.comment_ibox {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+.comment_add_btn_comments {
+    background-color: #444;
+    color: white;
+    border: none;
+}
+
+.channel_description {
+    margin-top: 10px;
+    padding: 10px;
+    font-size: 14px;
+    color: #606060;
+}
+
+.moreVideoBar {
+    width: calc(100vw - 4.5rem - 70vw);
+    padding: 0 1rem;
+}
+
+.dot {
+    width: 5px;
+    height: 5px;
+    background-color: #606060;
+    border-radius: 50%;
+    margin: 0 5px;
+}
+
+/* Responsive adjustments */
+@media screen and (max-width: 900px) {
+    .container2_videoPage {
+        flex-direction: column;
+    }
+
+    .video_display_screen_videoPage {
+        width: 100%;
+    }
+
+    .moreVideoBar {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
