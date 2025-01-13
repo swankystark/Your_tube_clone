@@ -1,7 +1,7 @@
 import express from "express"
 import { login } from "../Controllers/Auth.js"
 import { updatechaneldata,getallchanels } from "../Controllers/channel.js";
-import { createChatRoom } from "../Controllers/chatRoom.js"; // Import the new function
+import { createChatRoom } from '../Controllers/ChatRoom.js'; // Import the new function
 
 const routes=express.Router();
 
