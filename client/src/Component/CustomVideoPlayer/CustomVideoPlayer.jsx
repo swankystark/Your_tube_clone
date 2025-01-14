@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { FaPlay, FaPause } from 'react-icons/fa';
+import { getVideoUrl } from '../../utils/urlConfig';
 import './CustomVideoPlayer.css';
 
 const CustomVideoPlayer = ({ 
@@ -51,14 +52,10 @@ const CustomVideoPlayer = ({
         >
             <video
                 ref={videoRef}
-                src={src}
+                className="video-element"
+                src={getVideoUrl(src)}
                 onEnded={handleVideoEnd}
-                style={{ 
-                    transform: videoRef.current && 
-                        videoRef.current.videoWidth > videoRef.current.videoHeight 
-                        ? 'none' 
-                        : 'rotate(0deg)' 
-                }}
+                playsInline
             />
             {showPlayOverlay && (
                 <div className="play-overlay">

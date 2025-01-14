@@ -1,8 +1,9 @@
 import axios from 'axios';
+import { getServerUrl } from '../utils/urlConfig';
 
 // Create Axios instance with base configuration
 const API = axios.create({ 
-    baseURL: process.env.REACT_APP_SERVER_URL || 'http://localhost:5000',
+    baseURL: getServerUrl(),
     withCredentials: true
 });
 
