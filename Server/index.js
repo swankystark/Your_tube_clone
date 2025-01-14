@@ -55,6 +55,15 @@ validateEnvVariables();
 
 const app = express()
 const server = http.createServer(app)
+const io = new Server(server, {
+    cors: {
+        origin: process.env.CLIENT_URL || "http://localhost:3000",
+        methods: ["GET", "POST"],
+        credentials: true
+    }
+});
+
+export { io };
 
 app.use(bodyParser.json({limit:"30mb",extended:true}))
 app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
@@ -401,5 +410,3 @@ mongoose.connect(CONNECTION_URL, {
     });
     process.exit(1);
 });
-
-export { io };
