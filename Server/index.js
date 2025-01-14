@@ -68,10 +68,8 @@ const corsOptions = {
             /\.netlify\.app$/
         ];
         
-        // Allow requests with no origin (like mobile apps or curl requests)
-        if (!origin) return callback(null, true);
+        if (!origin) return callback(null, true); // Allow requests with no origin
         
-        // Check if origin matches any allowed origins
         const isAllowed = allowedOrigins.some(allowed => {
             if (allowed instanceof RegExp) {
                 return allowed.test(origin);
@@ -91,7 +89,9 @@ const corsOptions = {
         'Authorization',
         'X-Requested-With',
         'Accept',
-        'Origin'
+        'Origin',
+        'Access-Control-Allow-Headers',
+        'Access-Control-Allow-Origin'
     ],
     credentials: true,
     preflightContinue: false,
