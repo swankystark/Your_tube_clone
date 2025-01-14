@@ -63,8 +63,11 @@ app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 app.use(cors({
     origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://your-tube-clone-1-7fms.onrender.com', 'https://your-tube-project.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
+    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
+    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    credentials: true,
+    preflightContinue: false,
+    optionsSuccessStatus: 204
 }));
 
 app.use(express.json({limit:"30mb",extended:true}))
@@ -80,7 +83,7 @@ const io = new Server(server, {
     cors: {
         origin: ["http://localhost:3000", "http://localhost:5000", "https://your-tube-clone-1-7fms.onrender.com", "https://your-tube-project.netlify.app"],
         methods: ["GET", "POST"],
-        allowedHeaders: ["Authorization"],
+        allowedHeaders: ["Authorization", "Content-Type"],
         credentials: true
     }
 });

@@ -4,7 +4,11 @@ import { getServerUrl } from '../utils/urlConfig';
 // Create Axios instance with base configuration
 const API = axios.create({ 
     baseURL: getServerUrl(),
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
 });
 
 // Dynamically set headers based on request type
@@ -12,9 +16,6 @@ API.interceptors.request.use((config) => {
     // Check if it's a file upload
     if (config.data instanceof FormData) {
         config.headers['Content-Type'] = 'multipart/form-data';
-    } else {
-        config.headers['Content-Type'] = 'application/json';
-        config.headers['Accept'] = 'application/json';
     }
 
     // Add authentication token
@@ -35,28 +36,50 @@ API.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
+// Add response interceptor for better error handling
+API.interceptors.response.use(
+    (response) => response,
+    (error) => {
+        console.error('API Error:', error);
+        if (error.response) {
+            // The request was made and the server responded with a status code
+            // that falls out of the range of 2xx
+            console.error('Response Error:', error.response.data);
+            return Promise.reject(error.response.data);
+        } else if (error.request) {
+            // The request was made but no response was received
+            console.error('Request Error:', error.request);
+            return Promise.reject({ message: 'No response from server' });
+        } else {
+            // Something happened in setting up the request that triggered an Error
+            console.error('Setup Error:', error.message);
+            return Promise.reject({ message: error.message });
+        }
+    }
+);
+
 // Log base URL for debugging
 console.log('API Base URL:', API.defaults.baseURL);
 
 // Global error handling for API requests
-API.interceptors.response.use(
-    (response) => response,
-    (error) => {
-        console.error('API Request Error:', {
-            message: error.message,
-            status: error.response?.status,
-            data: error.response?.data,
-            config: {
-                url: error.config?.url,
-                method: error.config?.method,
-                baseURL: error.config?.baseURL
-            },
-            networkError: error.isAxiosError && !error.response,
-            connectionRefused: error.code === 'ECONNREFUSED'
-        });
-        return Promise.reject(error);
-    }
-);
+// API.interceptors.response.use(
+//     (response) => response,
+//     (error) => {
+//         console.error('API Request Error:', {
+//             message: error.message,
+//             status: error.response?.status,
+//             data: error.response?.data,
+//             config: {
+//                 url: error.config?.url,
+//                 method: error.config?.method,
+//                 baseURL: error.config?.baseURL
+//             },
+//             networkError: error.isAxiosError && !error.response,
+//             connectionRefused: error.code === 'ECONNREFUSED'
+//         });
+//         return Promise.reject(error);
+//     }
+// );
 
 // Error handling wrapper
 const handleApiError = (error) => {
