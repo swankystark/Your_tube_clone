@@ -13,122 +13,15 @@ const CommentItem = ({ comment, videoid }) => {
     const [isEditing, setIsEditing] = useState(false);
     const [editedComment, setEditedComment] = useState(comment.commentbody);
     const [showTranslationModal, setShowTranslationModal] = useState(false);
-    const [currentTranslation, setCurrentTranslation] = useState(null);
+    const [currentTranslation, setCurrentTranslation] = useState({
+        language: 'original',
+        text: comment.commentbody
+    });
+    const [availableTranslations, setAvailableTranslations] = useState([
+        { language: 'original', text: comment.commentbody },
+        ...(comment.translations || [])
+    ]);
     const currentuser = useSelector(state => state.currentuserreducer);
-
-    // List of languages supported by Google Translate
-    const languages = [
-        { code: 'auto', name: 'Detect Language' },
-        { code: 'af', name: 'Afrikaans' },
-        { code: 'sq', name: 'Albanian' },
-        { code: 'am', name: 'Amharic' },
-        { code: 'ar', name: 'Arabic' },
-        { code: 'hy', name: 'Armenian' },
-        { code: 'az', name: 'Azerbaijani' },
-        { code: 'eu', name: 'Basque' },
-        { code: 'be', name: 'Belarusian' },
-        { code: 'bn', name: 'Bengali' },
-        { code: 'bs', name: 'Bosnian' },
-        { code: 'bg', name: 'Bulgarian' },
-        { code: 'ca', name: 'Catalan' },
-        { code: 'ceb', name: 'Cebuano' },
-        { code: 'zh-CN', name: 'Chinese (Simplified)' },
-        { code: 'zh-TW', name: 'Chinese (Traditional)' },
-        { code: 'co', name: 'Corsican' },
-        { code: 'hr', name: 'Croatian' },
-        { code: 'cs', name: 'Czech' },
-        { code: 'da', name: 'Danish' },
-        { code: 'nl', name: 'Dutch' },
-        { code: 'en', name: 'English' },
-        { code: 'eo', name: 'Esperanto' },
-        { code: 'et', name: 'Estonian' },
-        { code: 'fi', name: 'Finnish' },
-        { code: 'fr', name: 'French' },
-        { code: 'fy', name: 'Frisian' },
-        { code: 'gl', name: 'Galician' },
-        { code: 'ka', name: 'Georgian' },
-        { code: 'de', name: 'German' },
-        { code: 'el', name: 'Greek' },
-        { code: 'gu', name: 'Gujarati' },
-        { code: 'ht', name: 'Haitian Creole' },
-        { code: 'ha', name: 'Hausa' },
-        { code: 'haw', name: 'Hawaiian' },
-        { code: 'he', name: 'Hebrew' },
-        { code: 'hi', name: 'Hindi' },
-        { code: 'hmn', name: 'Hmong' },
-        { code: 'hu', name: 'Hungarian' },
-        { code: 'is', name: 'Icelandic' },
-        { code: 'ig', name: 'Igbo' },
-        { code: 'id', name: 'Indonesian' },
-        { code: 'ga', name: 'Irish' },
-        { code: 'it', name: 'Italian' },
-        { code: 'ja', name: 'Japanese' },
-        { code: 'jv', name: 'Javanese' },
-        { code: 'kn', name: 'Kannada' },
-        { code: 'kk', name: 'Kazakh' },
-        { code: 'km', name: 'Khmer' },
-        { code: 'rw', name: 'Kinyarwanda' },
-        { code: 'ko', name: 'Korean' },
-        { code: 'ku', name: 'Kurdish' },
-        { code: 'ky', name: 'Kyrgyz' },
-        { code: 'lo', name: 'Lao' },
-        { code: 'la', name: 'Latin' },
-        { code: 'lv', name: 'Latvian' },
-        { code: 'lt', name: 'Lithuanian' },
-        { code: 'lb', name: 'Luxembourgish' },
-        { code: 'mk', name: 'Macedonian' },
-        { code: 'mg', name: 'Malagasy' },
-        { code: 'ms', name: 'Malay' },
-        { code: 'ml', name: 'Malayalam' },
-        { code: 'mt', name: 'Maltese' },
-        { code: 'mi', name: 'Maori' },
-        { code: 'mr', name: 'Marathi' },
-        { code: 'mn', name: 'Mongolian' },
-        { code: 'my', name: 'Myanmar (Burmese)' },
-        { code: 'ne', name: 'Nepali' },
-        { code: 'no', name: 'Norwegian' },
-        { code: 'ny', name: 'Nyanja (Chichewa)' },
-        { code: 'or', name: 'Odia (Oriya)' },
-        { code: 'ps', name: 'Pashto' },
-        { code: 'fa', name: 'Persian' },
-        { code: 'pl', name: 'Polish' },
-        { code: 'pt', name: 'Portuguese' },
-        { code: 'pa', name: 'Punjabi' },
-        { code: 'ro', name: 'Romanian' },
-        { code: 'ru', name: 'Russian' },
-        { code: 'sm', name: 'Samoan' },
-        { code: 'gd', name: 'Scots Gaelic' },
-        { code: 'sr', name: 'Serbian' },
-        { code: 'st', name: 'Sesotho' },
-        { code: 'sn', name: 'Shona' },
-        { code: 'sd', name: 'Sindhi' },
-        { code: 'si', name: 'Sinhala (Sinhalese)' },
-        { code: 'sk', name: 'Slovak' },
-        { code: 'sl', name: 'Slovenian' },
-        { code: 'so', name: 'Somali' },
-        { code: 'es', name: 'Spanish' },
-        { code: 'su', name: 'Sundanese' },
-        { code: 'sw', name: 'Swahili' },
-        { code: 'sv', name: 'Swedish' },
-        { code: 'tl', name: 'Tagalog (Filipino)' },
-        { code: 'tg', name: 'Tajik' },
-        { code: 'ta', name: 'Tamil' },
-        { code: 'tt', name: 'Tatar' },
-        { code: 'te', name: 'Telugu' },
-        { code: 'th', name: 'Thai' },
-        { code: 'tr', name: 'Turkish' },
-        { code: 'tk', name: 'Turkmen' },
-        { code: 'uk', name: 'Ukrainian' },
-        { code: 'ur', name: 'Urdu' },
-        { code: 'ug', name: 'Uyghur' },
-        { code: 'uz', name: 'Uzbek' },
-        { code: 'vi', name: 'Vietnamese' },
-        { code: 'cy', name: 'Welsh' },
-        { code: 'xh', name: 'Xhosa' },
-        { code: 'yi', name: 'Yiddish' },
-        { code: 'yo', name: 'Yoruba' },
-        { code: 'zu', name: 'Zulu' }
-    ];
 
     useEffect(() => {
         if (currentuser?.result?._id) {
@@ -144,6 +37,13 @@ const CommentItem = ({ comment, videoid }) => {
             setDislikebtn(isDisliked);
         }
     }, [currentuser, comment]);
+
+    useEffect(() => {
+        setAvailableTranslations([
+            { language: 'original', text: comment.commentbody },
+            ...(comment.translations || [])
+        ]);
+    }, [comment.translations, comment.commentbody]);
 
     const toggleLikeComment = () => {
         if (!currentuser) {
@@ -198,24 +98,41 @@ const CommentItem = ({ comment, videoid }) => {
     };
 
     const handleTranslate = () => {
-        // Open translation modal
         setShowTranslationModal(true);
     };
 
-    const performTranslation = (targetLanguage) => {
-        dispatch(translatecomment(comment._id, targetLanguage))
-            .then((translatedText) => {
+    const performTranslation = async (targetLanguage) => {
+        try {
+            const response = await dispatch(translatecomment(comment._id, targetLanguage));
+            
+            if (response && response.translatedText) {
                 // Update current translation
                 setCurrentTranslation({
                     language: targetLanguage,
-                    text: translatedText
+                    text: response.translatedText
                 });
-                console.log('Comment translated successfully:', translatedText);
-            })
-            .catch((error) => {
-                console.error('Translation failed:', error);
-                alert('Failed to translate comment. Please try again.');
-            });
+
+                // Update available translations if this is a new translation
+                if (!availableTranslations.find(t => t.language === targetLanguage)) {
+                    setAvailableTranslations(prev => [
+                        ...prev,
+                        { language: targetLanguage, text: response.translatedText }
+                    ]);
+                }
+
+                console.log('Comment translated successfully:', response.translatedText);
+            }
+        } catch (error) {
+            console.error('Translation failed:', error);
+            alert('Failed to translate comment. Please try again.');
+        }
+    };
+
+    const switchTranslation = (language) => {
+        const translation = availableTranslations.find(t => t.language === language);
+        if (translation) {
+            setCurrentTranslation(translation);
+        }
     };
 
     const handleEdit = () => {
@@ -238,10 +155,18 @@ const CommentItem = ({ comment, videoid }) => {
         }
     };
 
-    const toggleOriginalTranslation = () => {
-        // Toggle between original and translated comment
-        setCurrentTranslation(prev => prev ? null : currentTranslation);
-    };
+    const languageOptions = [
+        { code: 'en', name: 'English' },
+        { code: 'es', name: 'Spanish' },
+        { code: 'fr', name: 'French' },
+        { code: 'de', name: 'German' },
+        { code: 'hi', name: 'Hindi' },
+        { code: 'ta', name: 'Tamil' },
+        { code: 'te', name: 'Telugu' },
+        { code: 'ml', name: 'Malayalam' },
+        { code: 'kn', name: 'Kannada' },
+        { code: 'bn', name: 'Bengali' }
+    ];
 
     return (
         <div className="comment-item">
@@ -277,17 +202,37 @@ const CommentItem = ({ comment, videoid }) => {
                 )}
             </div>
             
-            {isEditing ? (
-                <textarea 
-                    className="comment-edit-input"
-                    value={editedComment}
-                    onChange={(e) => setEditedComment(e.target.value)}
-                />
-            ) : (
-                <div className="comment-body">
-                    {currentTranslation ? currentTranslation.text : comment.commentbody}
-                </div>
-            )}
+            <div className="comment-content">
+                {isEditing ? (
+                    <textarea
+                        value={editedComment}
+                        onChange={(e) => setEditedComment(e.target.value)}
+                    />
+                ) : (
+                    <>
+                        <p className="comment-text">{currentTranslation.text}</p>
+                        {availableTranslations.length > 1 && (
+                            <div className="translation-controls">
+                                <select 
+                                    value={currentTranslation.language}
+                                    onChange={(e) => switchTranslation(e.target.value)}
+                                    className="translation-selector"
+                                >
+                                    <option value="original">Original</option>
+                                    {availableTranslations
+                                        .filter(t => t.language !== 'original')
+                                        .map(t => (
+                                            <option key={t.language} value={t.language}>
+                                                {languageOptions.find(l => l.code === t.language)?.name || t.language}
+                                            </option>
+                                        ))
+                                    }
+                                </select>
+                            </div>
+                        )}
+                    </>
+                )}
+            </div>
 
             <div className="comment-footer">
                 <div className="comment-interaction-buttons">
@@ -297,15 +242,6 @@ const CommentItem = ({ comment, videoid }) => {
                     >
                         <FaLanguage /> Translate
                     </button>
-
-                    {currentTranslation && (
-                        <button 
-                            className="toggle-translation-btn"
-                            onClick={toggleOriginalTranslation}
-                        >
-                            {currentTranslation ? 'Original' : 'Translated'}
-                        </button>
-                    )}
 
                     <div className="like-dislike-buttons">
                         <div 
@@ -338,25 +274,26 @@ const CommentItem = ({ comment, videoid }) => {
             {showTranslationModal && (
                 <div className="translation-modal">
                     <div className="translation-modal-content">
-                        <h3>Translate Comment</h3>
+                        <h3>Translate to:</h3>
                         <div className="language-grid">
-                            {languages.map((lang) => (
-                                <button 
+                            {languageOptions.map(lang => (
+                                <button
                                     key={lang.code}
                                     onClick={() => {
                                         performTranslation(lang.code);
                                         setShowTranslationModal(false);
                                     }}
+                                    className="language-button"
                                 >
                                     {lang.name}
                                 </button>
                             ))}
                         </div>
                         <button 
-                            className="close-modal-btn"
                             onClick={() => setShowTranslationModal(false)}
+                            className="close-modal-button"
                         >
-                            Cancel
+                            Close
                         </button>
                     </div>
                 </div>
@@ -371,7 +308,6 @@ const Comment = ({ videoid }) => {
     const currentuser = useSelector(state => state.currentuserreducer);
     const commentlist = useSelector(state => state.commentreducer)
     
-    // Fetch comments when component mounts or video changes
     useEffect(() => {
         if (videoid) {
             dispatch(getallcomment(videoid));
@@ -381,13 +317,11 @@ const Comment = ({ videoid }) => {
     const handleonsubmit = (e) => {
         e.preventDefault();
         
-        // Validate comment input
         if (!commenttext.trim()) {
             alert("Please enter a comment");
             return;
         }
 
-        // Get current user from Redux store
         const userId = currentuser?.result?._id;
         const username = currentuser?.result?.name || 'Anonymous';
 
@@ -407,14 +341,12 @@ const Comment = ({ videoid }) => {
         setcommentext("");
     };
 
-    // Filter comments for the specific video
     const videoComments = videoid 
         ? (commentlist?.data?.filter((q) => videoid === q?.videoid) || []) 
         : [];
 
     return (
         <div className="comment-section">
-            {/* Comment Input */}
             <form onSubmit={handleonsubmit} className="comment-input-form">
                 <input 
                     type="text" 
@@ -425,7 +357,6 @@ const Comment = ({ videoid }) => {
                 <button type="submit">Comment</button>
             </form>
 
-            {/* Comment List */}
             <div className="comment-list">
                 {videoComments.map((comment) => (
                     <CommentItem 

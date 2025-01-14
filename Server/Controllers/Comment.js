@@ -64,18 +64,23 @@ const translateText = async (text, targetLanguage = 'en') => {
 
         // Detect source language if not provided
         const sourceLanguage = await detectLanguage(text);
+        console.log('Source language detected:', sourceLanguage);
 
         // If source and target languages are the same, return original text
         if (sourceLanguage === targetLanguage) {
+            console.log('Source and target languages are the same, returning original text');
             return text;
         }
 
         // Attempt translation
-        const response = await axios.post(`https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_TRANSLATE_API_KEY}`, {
-            q: text,
-            source: sourceLanguage,
-            target: targetLanguage
-        });
+        const response = await axios.post(
+            `https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_TRANSLATE_API_KEY}`,
+            {
+                q: text,
+                target: targetLanguage,
+                format: 'text'
+            }
+        );
 
         // Extract translated text
         const translatedText = response.data.data.translations[0].translatedText;
@@ -98,11 +103,11 @@ const translateText = async (text, targetLanguage = 'en') => {
 
         return translatedText;
     } catch (error) {
-        console.error('Comprehensive translation error:', {
+        console.error('Translation error:', {
             message: error.message,
             text,
             targetLanguage,
-            fullError: error
+            response: error.response?.data
         });
 
         // Fallback mechanism
