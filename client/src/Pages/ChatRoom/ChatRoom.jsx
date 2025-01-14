@@ -6,7 +6,7 @@ import {
     getChatRoomMessages, 
     sendChatMessage,
     clearChatRoomMessages 
-} from '../../Api';
+} from '../../api';
 import './ChatRoom.css';
 
 const ChatRoom = ({ currentUser }) => {

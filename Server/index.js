@@ -47,7 +47,7 @@ const validateEnvVariables = () => {
     }
 
     // Ensure PORT is set
-    process.env.PORT = process.env.PORT || '5000';
+    process.env.PORT = process.env.PORT ;
 };
 
 // Call validation function
@@ -378,7 +378,7 @@ app.use("/chatroom", chatRoomRoutes)
 app.use("/chatroom-invitation", chatRoomInvitationRoutes)
 
 // Database connection
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const CONNECTION_URL = process.env.DB_URL;
 
 console.log('Environment Variables:', {
