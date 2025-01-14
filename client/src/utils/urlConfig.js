@@ -6,10 +6,19 @@ const getServerUrl = () => {
 export const getVideoUrl = (videoPath) => {
     if (!videoPath) return '';
     if (videoPath.startsWith('http')) return videoPath;
-    return `${getServerUrl()}/${videoPath}`;
+    
+    // Remove any leading slashes to avoid double slashes
+    const cleanPath = videoPath.replace(/^\/+/, '');
+    return `${getServerUrl()}/${cleanPath}`;
+};
+
+// Helper to check if we're in development mode
+export const isDevelopment = () => {
+    return !process.env.NODE_ENV || process.env.NODE_ENV === 'development';
 };
 
 export default {
     getServerUrl,
-    getVideoUrl
+    getVideoUrl,
+    isDevelopment
 };
