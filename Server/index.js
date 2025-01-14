@@ -60,33 +60,58 @@ app.use(bodyParser.json({limit:"30mb",extended:true}))
 app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 
 // CORS configuration
-app.use(cors({
+const corsOptions = {
     origin: function(origin, callback) {
         const allowedOrigins = [
-            process.env.CLIENT_URL,
+            process.env.CLIENT_URL || 'http://localhost:3000',
             'https://your-tube-project.netlify.app',
-            'http://localhost:3000'
-        ].filter(Boolean); // Remove any undefined values
+            /\.netlify\.app$/
+        ];
         
         // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
         
-        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+        // Check if origin matches any allowed origins
+        const isAllowed = allowedOrigins.some(allowed => {
+            if (allowed instanceof RegExp) {
+                return allowed.test(origin);
+            }
+            return origin === allowed;
+        });
+
+        if (isAllowed || process.env.NODE_ENV === 'development') {
             callback(null, true);
         } else {
-            callback(new Error('Not allowed by CORS'));
+            callback(new Error(`CORS: ${origin} not allowed`));
         }
     },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+    allowedHeaders: [
+        'Content-Type',
+        'Authorization',
+        'X-Requested-With',
+        'Accept',
+        'Origin'
+    ],
     credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(express.json({limit:"30mb",extended:true}))
 app.use(express.urlencoded({limit:"30mb",extended:true}))
-app.use('/uploads',express.static(path.join('uploads')))
+
+// Serve static files with proper headers
+app.use('/uploads', (req, res, next) => {
+    res.set({
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=31536000',
+        'Cross-Origin-Resource-Policy': 'cross-origin'
+    });
+    next();
+}, express.static('uploads'));
 
 app.get('/',(req,res)=>{
     res.send("Your tube is working")
@@ -94,7 +119,7 @@ app.get('/',(req,res)=>{
 
 // Add health check endpoint
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' });
+    res.status(200).json({ status: 'ok', env: process.env.NODE_ENV });
 });
 
 // Socket.io Configuration

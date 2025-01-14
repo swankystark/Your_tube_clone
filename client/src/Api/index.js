@@ -1,18 +1,34 @@
 import axios from 'axios';
-import { getServerUrl } from '../utils/urlConfig';
+import { getServerUrl, validateServerUrl } from '../utils/urlConfig';
+
+// Validate server URL
+const serverUrl = getServerUrl();
+if (!validateServerUrl(serverUrl)) {
+    console.error('Invalid server URL:', serverUrl);
+}
 
 // Create Axios instance with base configuration
 const API = axios.create({ 
-    baseURL: getServerUrl(),
+    baseURL: serverUrl,
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
-    }
+    },
+    timeout: 10000 // 10 second timeout
 });
 
 // Dynamically set headers based on request type
 API.interceptors.request.use((config) => {
+    // Log request in development
+    if (process.env.NODE_ENV === 'development') {
+        console.log('API Request:', {
+            url: config.url,
+            method: config.method,
+            data: config.data
+        });
+    }
+
     // Check if it's a file upload
     if (config.data instanceof FormData) {
         config.headers['Content-Type'] = 'multipart/form-data';
@@ -38,22 +54,41 @@ API.interceptors.request.use((config) => {
 
 // Add response interceptor for better error handling
 API.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        // Log response in development
+        if (process.env.NODE_ENV === 'development') {
+            console.log('API Response:', {
+                url: response.config.url,
+                status: response.status,
+                data: response.data
+            });
+        }
+        return response;
+    },
     (error) => {
         console.error('API Error:', {
             message: error.message,
             status: error.response?.status,
-            data: error.response?.data
+            data: error.response?.data,
+            url: error.config?.url
         });
 
         if (error.response) {
-            return Promise.reject(error.response.data);
-        } else if (error.request) {
+            // Server responded with error
             return Promise.reject({
-                message: 'No response received from server. Please check your connection.',
+                message: error.response.data?.message || 'Server error',
+                status: error.response.status,
+                data: error.response.data
+            });
+        } else if (error.request) {
+            // No response received
+            return Promise.reject({
+                message: 'No response from server. Please check your connection.',
+                status: 0,
                 error: error.request
             });
         } else {
+            // Request setup error
             return Promise.reject({
                 message: 'Error setting up request',
                 error: error.message

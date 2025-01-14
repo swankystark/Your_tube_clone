@@ -3,7 +3,9 @@ const getServerUrl = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL;
     if (!serverUrl) {
         console.warn('REACT_APP_SERVER_URL is not set, using fallback URL');
-        return 'http://localhost:5000';
+        return process.env.NODE_ENV === 'development' 
+            ? 'http://localhost:5000'
+            : 'https://your-tube-clone-1-7fms.onrender.com';
     }
     return serverUrl.replace(/\/$/, ''); // Remove trailing slash if present
 };
@@ -31,9 +33,22 @@ export const isDevelopment = () => {
 export const checkServerConnection = async () => {
     try {
         const response = await fetch(getServerUrl() + '/health');
+        const data = await response.json();
+        console.log('Server health check:', data);
         return response.ok;
     } catch (error) {
         console.error('Server connection check failed:', error);
+        return false;
+    }
+};
+
+// Helper to validate server URL
+export const validateServerUrl = (url) => {
+    if (!url) return false;
+    try {
+        const parsed = new URL(url);
+        return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+    } catch (error) {
         return false;
     }
 };
@@ -42,5 +57,6 @@ export default {
     getServerUrl,
     getVideoUrl,
     isDevelopment,
-    checkServerConnection
+    checkServerConnection,
+    validateServerUrl
 };
