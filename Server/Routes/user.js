@@ -1,7 +1,7 @@
 import express from "express"
-import { login } from "../Controllers/Auth.js"
-import { updatechaneldata,getallchanels } from "../Controllers/channel.js";
-import { createChatRoom } from "../Controllers/ChatRoom.js"; // Fixed case sensitivity
+import { login } from "../controllers/auth.js"
+import { updatechaneldata,getallchanels } from "../controllers/channel.js";
+import { createChatRoom } from "../controllers/chatroom.js";
 
 const routes=express.Router();
 
