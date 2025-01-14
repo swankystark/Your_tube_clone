@@ -1,5 +1,5 @@
 // URL configuration utility
-const getServerUrl = () => {
+export const getServerUrl = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL;
     if (!serverUrl) {
         console.warn('REACT_APP_SERVER_URL is not set, using fallback URL');
@@ -13,7 +13,7 @@ export const getVideoUrl = (videoPath) => {
     if (videoPath.startsWith('http')) return videoPath;
     
     // Remove any leading or trailing slashes
-    const cleanPath = videoPath.replace(/^\/+|\/+$/g, '');
+    const cleanPath = videoPath.replace(/^\/+|\/+$|$/g, '');
     
     // Get server URL and ensure proper formatting
     const baseUrl = getServerUrl();

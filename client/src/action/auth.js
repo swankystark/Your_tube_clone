@@ -31,8 +31,6 @@ export const login = (userData) => async (dispatch) => {
             response: error.response?.data,
             status: error.response?.status
         });
-        
-        // Re-throw the error for the component to handle
         throw error;
     }
 };
