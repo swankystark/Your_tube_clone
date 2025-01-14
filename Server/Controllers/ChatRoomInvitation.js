@@ -1,6 +1,6 @@
-import ChatRoom from '../models/chatroom.js';
-import ChatRoomInvitation from '../models/chatroominvitation.js';
-import User from '../models/auth.js';
+import ChatRoom from '../Models/ChatRoom.js';
+import ChatRoomInvitation from '../Models/ChatRoomInvitation.js';
+import User from '../Models/Auth.js';
 
 export const inviteUserToChatRoom = async (req, res) => {
     try {

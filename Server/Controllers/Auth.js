@@ -1,4 +1,4 @@
-import users from "../models/Auth.js"
+import users from "../Models/Auth.js"
 import jwt from "jsonwebtoken"
 
 export const login = async (req, res) => {
