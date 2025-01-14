@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API = axios.create({ 
-    baseURL: process.env.REACT_APP_SERVER_URL || 'http://localhost:5000' 
+    baseURL: process.env.REACT_APP_SERVER_URL || 'https://your-tube-clone-1-7fms.onrender.com' 
 });
 
 // Add token to every request

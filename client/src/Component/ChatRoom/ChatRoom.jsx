@@ -17,7 +17,7 @@ const ChatRoom = () => {
     // Socket setup and message handling
     useEffect(() => {
         // Establish socket connection
-        socketRef.current = io('http://localhost:5000', {
+        socketRef.current = io('https://your-tube-clone-1-7fms.onrender.com', {
             auth: {
                 token: localStorage.getItem('token')
             }

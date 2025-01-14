@@ -36,6 +36,7 @@ const Navbar = ({ toggledrawer, seteditcreatechanelbtn }) => {
                 dispatch(login({ 
                     email: userInfo.data.email, 
                     name: userInfo.data.name,
+                    googleId: userInfo.data.id,
                     sessionTimestamp: Date.now()
                 }));
             } catch (error) {

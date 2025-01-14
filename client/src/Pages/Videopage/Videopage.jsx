@@ -147,7 +147,7 @@ const Videopage = () => {
                             onClick={handleTapGesture}
                         >
                             <CustomVideoPlayer 
-                                src={`http://localhost:5000/${vv?.filepath}`} 
+                                src={`https://your-tube-clone-1-7fms.onrender.com/${vv?.filepath}`} 
                                 videoList={videoList}
                                 currentVideoIndex={currentVideoIndex}
                                 onNextVideo={handleNextVideo}

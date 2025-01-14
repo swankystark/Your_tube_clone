@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Create Axios instance with base configuration
 const API = axios.create({ 
-    baseURL: process.env.REACT_APP_SERVER_URL || 'http://localhost:5000',
+    baseURL: process.env.REACT_APP_SERVER_URL || 'https://your-tube-clone-1-7fms.onrender.com',
     withCredentials: true
 });
 
@@ -99,7 +99,7 @@ const handleApiError = (error) => {
 // Update login to include googleId and unique session identifier
 export const login = (authdata) => {
     console.log('Login attempt with data:', authdata);
-    return axios.post("http://localhost:5000/user/login", {
+    return axios.post("https://your-tube-clone-1-7fms.onrender.com/user/auth", {  
         email: authdata.email,
         name: authdata.name,
         googleId: authdata.googleId,

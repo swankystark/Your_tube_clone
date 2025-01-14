@@ -76,14 +76,7 @@ app.get('/',(req,res)=>{
 })
 
 // Socket.io Configuration
-const io = new Server(server, {
-    cors: {
-        origin: ["http://localhost:3000", "http://localhost:5000"],
-        methods: ["GET", "POST"],
-        allowedHeaders: ["Authorization"],
-        credentials: true
-    }
-});
+
 
 // Track active rooms and users
 const activeRooms = new Map();
