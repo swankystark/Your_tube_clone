@@ -40,83 +40,35 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
     (response) => response,
     (error) => {
-        console.error('API Error:', error);
+        console.error('API Error:', {
+            message: error.message,
+            status: error.response?.status,
+            data: error.response?.data
+        });
+
         if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.error('Response Error:', error.response.data);
             return Promise.reject(error.response.data);
         } else if (error.request) {
-            // The request was made but no response was received
-            console.error('Request Error:', error.request);
-            return Promise.reject({ message: 'No response from server' });
+            return Promise.reject({
+                message: 'No response received from server. Please check your connection.',
+                error: error.request
+            });
         } else {
-            // Something happened in setting up the request that triggered an Error
-            console.error('Setup Error:', error.message);
-            return Promise.reject({ message: error.message });
+            return Promise.reject({
+                message: 'Error setting up request',
+                error: error.message
+            });
         }
     }
 );
 
-// Log base URL for debugging
-console.log('API Base URL:', API.defaults.baseURL);
-
-// Global error handling for API requests
-// API.interceptors.response.use(
-//     (response) => response,
-//     (error) => {
-//         console.error('API Request Error:', {
-//             message: error.message,
-//             status: error.response?.status,
-//             data: error.response?.data,
-//             config: {
-//                 url: error.config?.url,
-//                 method: error.config?.method,
-//                 baseURL: error.config?.baseURL
-//             },
-//             networkError: error.isAxiosError && !error.response,
-//             connectionRefused: error.code === 'ECONNREFUSED'
-//         });
-//         return Promise.reject(error);
-//     }
-// );
-
 // Error handling wrapper
 const handleApiError = (error) => {
-    // Log the full error for debugging
     console.error('API Request Error:', {
         message: error.message,
         status: error.response?.status,
         data: error.response?.data
     });
-
-    // Extract more detailed error message
-    const errorMessage = error.response?.data?.message || 
-        error.message || 
-        'An unexpected error occurred';
-
-    // Provide context-specific error handling
-    switch (error.response?.status) {
-        case 400:
-            alert(`Bad Request: ${errorMessage}`);
-            break;
-        case 401:
-            alert('Unauthorized: Please log in again');
-            break;
-        case 403:
-            alert('Forbidden: You do not have permission');
-            break;
-        case 404:
-            alert(`Not Found: ${errorMessage}`);
-            break;
-        case 500:
-            alert(`Server Error: ${errorMessage}`);
-            break;
-        default:
-            alert(`Error: ${errorMessage}`);
-    }
-
-    // Re-throw to allow further error handling
     throw error;
 };
 

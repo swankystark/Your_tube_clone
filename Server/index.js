@@ -59,12 +59,26 @@ const server = http.createServer(app)
 app.use(bodyParser.json({limit:"30mb",extended:true}))
 app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 
-// CORS Configuration with credentials support
+// CORS configuration
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://your-tube-clone-1-7fms.onrender.com', 'https://your-tube-project.netlify.app'],
+    origin: function(origin, callback) {
+        const allowedOrigins = [
+            process.env.CLIENT_URL,
+            'https://your-tube-project.netlify.app',
+            'http://localhost:3000'
+        ].filter(Boolean); // Remove any undefined values
+        
+        // Allow requests with no origin (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        
+        if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV === 'development') {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-    exposedHeaders: ['Content-Range', 'X-Content-Range'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
     preflightContinue: false,
     optionsSuccessStatus: 204
@@ -77,6 +91,11 @@ app.use('/uploads',express.static(path.join('uploads')))
 app.get('/',(req,res)=>{
     res.send("Your tube is working")
 })
+
+// Add health check endpoint
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' });
+});
 
 // Socket.io Configuration
 const io = new Server(server, {
