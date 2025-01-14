@@ -9,6 +9,9 @@ import { addtohistory } from '../../action/history'
 import Comment from '../../Component/Comment/Comment'
 import CustomVideoPlayer from '../../Component/CustomVideoPlayer/CustomVideoPlayer'
 import CloseWindowModal from '../../Component/CloseWindowModal/CloseWindowModal'
+import { createSocketConnection } from '../../utils/socketConfig';
+import { getVideoUrl } from '../../utils/urlConfig';
+import { addView, likeVideo } from '../../api/index';
 import "./Videopage.css"
 
 const Videopage = () => {
@@ -121,6 +124,24 @@ const Videopage = () => {
         }
         handleViews();
     }, [vid]);
+
+    const socketRef = useRef(null);
+    
+    useEffect(() => {
+        // Establish socket connection with custom options for video
+        socketRef.current = createSocketConnection({
+            transports: ['websocket'], // Prefer WebSocket for video
+            reconnectionAttempts: 3,
+            timeout: 10000
+        });
+
+        // Clean up on unmount
+        return () => {
+            if (socketRef.current) {
+                socketRef.current.disconnect();
+            }
+        };
+    }, []);
 
     // Handle next video
     const handleNextVideo = () => {

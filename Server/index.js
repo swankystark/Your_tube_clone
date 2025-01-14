@@ -125,100 +125,55 @@ app.get('/health', (req, res) => {
 // Socket.io Configuration
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "http://localhost:5000", "https://your-tube-clone-1-7fms.onrender.com", "https://your-tube-project.netlify.app"],
-        methods: ["GET", "POST"],
-        allowedHeaders: ["Authorization", "Content-Type"],
+        origin: function(origin, callback) {
+            const allowedOrigins = [
+                process.env.CLIENT_URL || 'http://localhost:3000',
+                'https://your-tube-project.netlify.app',
+                /\.netlify\.app$/
+            ];
+            
+            // Allow requests with no origin
+            if (!origin) return callback(null, true);
+            
+            // Check if origin matches any allowed origins
+            const isAllowed = allowedOrigins.some(allowed => {
+                if (allowed instanceof RegExp) {
+                    return allowed.test(origin);
+                }
+                return origin === allowed;
+            });
+
+            if (isAllowed || process.env.NODE_ENV === 'development') {
+                callback(null, true);
+            } else {
+                callback(new Error(`Socket.IO CORS: ${origin} not allowed`));
+            }
+        },
+        methods: ['GET', 'POST'],
         credentials: true
+    },
+    transports: ['websocket', 'polling'],
+    pingTimeout: 60000,
+    pingInterval: 25000
+});
+
+// Socket.io authentication middleware
+io.use((socket, next) => {
+    const token = socket.handshake.auth.token;
+    if (!token) {
+        return next(new Error('Authentication error'));
+    }
+    try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        socket.user = decoded;
+        next();
+    } catch (error) {
+        next(new Error('Invalid token'));
     }
 });
 
 // Track active rooms and users
 const activeRooms = new Map();
-
-// Socket authentication middleware
-io.use(async (socket, next) => {
-    try {
-        console.group('Socket Authentication');
-        console.log('Authentication Attempt');
-        console.log('Socket Handshake Query:', socket.handshake.query);
-        console.log('Socket Handshake Auth:', socket.handshake.auth);
-
-        const token = socket.handshake.auth.token;
-        const roomId = socket.handshake.query.roomId;
-        const userId = socket.handshake.query.userId;
-
-        console.log('Received Token:', token ? 'Present' : 'Missing');
-        console.log('Room ID:', roomId);
-        console.log('User ID:', userId);
-
-        if (!token) {
-            console.error('No authentication token provided');
-            return next(new Error('Authentication error: No token provided'));
-        }
-
-        try {
-            // Verify token
-            const decoded = jwt.verify(token, process.env.JWT_SECRET);
-            console.log('Decoded User:', {
-                id: decoded.id,
-                email: decoded.email,
-                name: decoded.name
-            });
-
-            // Additional verification
-            if (decoded.id !== userId) {
-                console.error('User ID mismatch', {
-                    tokenUserId: decoded.id,
-                    providedUserId: userId
-                });
-                return next(new Error('Authentication error: User ID mismatch'));
-            }
-
-            // Verify user exists in database
-            const user = await User.findById(decoded.id);
-            if (!user) {
-                console.error('User not found in database');
-                return next(new Error('Authentication error: User not found'));
-            }
-
-            // Optional: Check room access if room ID is provided
-            if (roomId) {
-                const room = await ChatRoom.findById(roomId);
-                if (!room) {
-                    console.error('Room not found:', roomId);
-                    return next(new Error('Authentication error: Room not found'));
-                }
-
-                // Check if user is a participant
-                const isMember = room.participants.some(
-                    p => p.toString() === decoded.id.toString()
-                );
-
-                if (!isMember) {
-                    console.error('User not a member of the room', {
-                        userId: decoded.id,
-                        roomId: roomId
-                    });
-                    return next(new Error('Authentication error: Not a room member'));
-                }
-            }
-
-            // Attach user to socket
-            socket.user = user;
-            console.log('Socket Authentication Successful');
-            console.groupEnd();
-            next();
-        } catch (tokenError) {
-            console.error('Token Verification Error:', tokenError.message);
-            console.groupEnd();
-            return next(new Error(`Authentication error: ${tokenError.message}`));
-        }
-    } catch (error) {
-        console.error('Socket Authentication Critical Error:', error);
-        console.groupEnd();
-        return next(new Error('Authentication failed'));
-    }
-});
 
 io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
