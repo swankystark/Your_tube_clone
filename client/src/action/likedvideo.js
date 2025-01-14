@@ -1,7 +1,8 @@
-import * as api from "../Api";
+import * as API from '../api';
+
 export const addtolikedvideo=(likedvideodata)=>async(dispatch)=>{
     try {
-        const {data}=await api.addtolikevideo(likedvideodata)
+        const {data}=await API.addtolikevideo(likedvideodata)
         dispatch({type:"POST_LIKEDVIDEO",data})
         dispatch(getalllikedvideo())
     } catch (error) {
@@ -11,7 +12,7 @@ export const addtolikedvideo=(likedvideodata)=>async(dispatch)=>{
 
 export const  getalllikedvideo=()=>async(dispatch)=>{
     try {
-        const {data}=await api.getalllikedvideo()
+        const {data}=await API.getalllikedvideo()
         dispatch({type:"FETCH_ALL_LIKED_VIDEOS",payload:data})
     } catch (error) {
         console.log(error)
@@ -21,7 +22,7 @@ export const  getalllikedvideo=()=>async(dispatch)=>{
 export const deletelikedvideo=(likedvidedata)=>async(dispatch)=>{
     try {
         const {videoid,viewer}=likedvidedata
-        await api.deletelikedvideo(videoid,viewer)
+        await API.deletelikedvideo(videoid,viewer)
         dispatch(getalllikedvideo())
     } catch (error) {
         console.log(error)

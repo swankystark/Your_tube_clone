@@ -1,4 +1,4 @@
-import * as api from "../Api";
+import * as API from '../api';
 
 export const uploadvideo = (videodata) => async (dispatch) => {
     try {
@@ -13,7 +13,7 @@ export const uploadvideo = (videodata) => async (dispatch) => {
             uploader: filedata.get('uploader')
         });
 
-        const { data } = await api.uploadvideo(filedata, {
+        const { data } = await API.uploadvideo(filedata, {
             ...fileoption,
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -37,7 +37,7 @@ export const uploadvideo = (videodata) => async (dispatch) => {
 
 export const getallvideo = () => async (dispatch) => {
     try {
-        const { data } = await api.getvideos()
+        const { data } = await API.getvideos()
         dispatch({ type: 'FETCH_ALL_VIDEOS', payload: data })
     } catch (error) {
         console.log(error)
@@ -49,7 +49,7 @@ export const likevideo = (likedata) => async (dispatch) => {
         const { id, Like } = likedata;
         console.log('Like Video Data:', { id, Like });
         
-        const { data } = await api.likevideo(id, Like);
+        const { data } = await API.likevideo(id, Like);
         
         console.log('Like Video Response:', data);
         
@@ -70,7 +70,7 @@ export const viewvideo=(viewdata)=>async(dispatch)=>{
     try {
         const{id}=viewdata;
         console.log(id)
-        const {data}=await api.viewsvideo(id)
+        const {data}=await API.viewsvideo(id)
         dispatch({type:"POST_VIEWS",data})
         dispatch(getallvideo())
     } catch (error) {

@@ -3,9 +3,7 @@ const getServerUrl = () => {
     const serverUrl = process.env.REACT_APP_SERVER_URL;
     if (!serverUrl) {
         console.warn('REACT_APP_SERVER_URL is not set, using fallback URL');
-        return process.env.NODE_ENV === 'development' 
-            ? 'http://localhost:5000'
-            : 'https://your-tube-clone-1-7fms.onrender.com';
+        return 'https://your-tube-clone-1-7fms.onrender.com';
     }
     return serverUrl.replace(/\/$/, ''); // Remove trailing slash if present
 };

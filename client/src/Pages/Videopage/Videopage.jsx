@@ -11,8 +11,11 @@ import CustomVideoPlayer from '../../Component/CustomVideoPlayer/CustomVideoPlay
 import CloseWindowModal from '../../Component/CloseWindowModal/CloseWindowModal'
 import { createSocketConnection } from '../../utils/socketConfig';
 import { getVideoUrl } from '../../utils/urlConfig';
-import { addView, likeVideo } from '../../api/index';
+import axios from 'axios';
+import { addView, likeVideo } from '../../api/index'; 
 import "./Videopage.css"
+
+const API_URL = 'https://your-tube-clone-1-7fms.onrender.com';
 
 const Videopage = () => {
     const { vid } = useParams();
@@ -34,6 +37,20 @@ const Videopage = () => {
     const videoList = vids?.data || [];
     const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
     const vv = videoList.find((q) => q._id === vid);
+
+    // Fetch video details
+    useEffect(() => {
+        const fetchVideo = async () => {
+            try {
+                const response = await axios.get(`${API_URL}/videos/${vid}`);
+                // Handle response
+            } catch (error) {
+                console.error('Error fetching video:', error);
+            }
+        };
+
+        fetchVideo();
+    }, [vid]);
 
     // Gesture handling
     const handleTapGesture = (event) => {
@@ -164,7 +181,7 @@ const Videopage = () => {
                             onClick={handleTapGesture}
                         >
                             <CustomVideoPlayer 
-                                src={`http://localhost:5000/${vv?.filepath}`} 
+                                src={`${API_URL}/${vv?.filepath}`} 
                                 videoList={videoList}
                                 currentVideoIndex={currentVideoIndex}
                                 onNextVideo={handleNextVideo}

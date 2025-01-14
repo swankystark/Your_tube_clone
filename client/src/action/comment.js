@@ -1,12 +1,4 @@
-import { 
-    editcomment as apiEditComment, 
-    getallcomment as apiGetAllComments, 
-    postcomment as apiPostComment, 
-    deletecomment as apiDeleteComment, 
-    likeComment as apiLikeComment, 
-    dislikeComment as apiDislikeComment, 
-    translateComment as apiTranslateComment 
-} from '../Api/index'
+import * as API from '../api';
 
 export const editcomment = (commentdata) => async (dispatch, getState) => {
     try {
@@ -18,7 +10,7 @@ export const editcomment = (commentdata) => async (dispatch, getState) => {
         }
 
         // Make API call to edit comment
-        const { data } = await apiEditComment(id, commentbody);
+        const { data } = await API.editComment(id, commentbody);
         
         // Dispatch edit action
         dispatch({
@@ -53,7 +45,7 @@ export const getallcomment = (videoid) => async (dispatch, getState) => {
             return [];
         }
 
-        const { data } = await apiGetAllComments(videoid);
+        const { data } = await API.getAllComments(videoid);
         
         // Filter out deleted comments and sensitive user data
         const filteredComments = data.filter(comment => !comment.isDeleted)
@@ -93,7 +85,7 @@ export const getallcomment = (videoid) => async (dispatch, getState) => {
 
 export const postcomment = (commentData) => async (dispatch) => {
     try {
-        const { data } = await apiPostComment(commentData);
+        const { data } = await API.postComment(commentData);
         
         // Ensure only safe comment data is dispatched
         const { likedBy, dislikedBy, ...safeComment } = data.comment;
@@ -125,7 +117,7 @@ export const deletecomment = (commentId) => async (dispatch, getState) => {
         }
 
         // Call API to delete comment
-        const response = await apiDeleteComment({
+        const response = await API.deleteComment({
             commentId, 
             videoId: currentVideoId
         });
@@ -145,7 +137,7 @@ export const deletecomment = (commentId) => async (dispatch, getState) => {
 
 export const likeComment = (likeData) => async (dispatch) => {
     try {
-        const { data } = await apiLikeComment(likeData);
+        const { data } = await API.likeComment(likeData);
         
         // Dispatch action to update comment in state
         dispatch({
@@ -166,7 +158,7 @@ export const likeComment = (likeData) => async (dispatch) => {
 
 export const dislikeComment = (dislikeData) => async (dispatch) => {
     try {
-        const { data } = await apiDislikeComment(dislikeData);
+        const { data } = await API.dislikeComment(dislikeData);
         
         // Dispatch action to update comment in state
         dispatch({
@@ -198,7 +190,7 @@ export const translatecomment = (commentId, targetLanguage) => async (dispatch) 
             targetLanguage
         };
 
-        const response = await apiTranslateComment(translationData);
+        const response = await API.translateComment(translationData);
 
         // Dispatch translation update
         dispatch({
