@@ -128,12 +128,8 @@ const Videopage = () => {
     const socketRef = useRef(null);
     
     useEffect(() => {
-        // Establish socket connection with custom options for video
-        socketRef.current = createSocketConnection({
-            transports: ['websocket'], // Prefer WebSocket for video
-            reconnectionAttempts: 3,
-            timeout: 10000
-        });
+        // Establish socket connection
+        socketRef.current = createSocketConnection();
 
         // Clean up on unmount
         return () => {

@@ -16,7 +16,7 @@ const ChatRoom = () => {
     // Socket setup and message handling
     useEffect(() => {
         // Establish socket connection
-        socketRef.current = createSocketConnection();
+        socketRef.current = createSocketConnection(process.env.REACT_APP_SOCKET_URL);
 
         // Listen for incoming messages
         socketRef.current.on('receive_message', (messageData) => {
