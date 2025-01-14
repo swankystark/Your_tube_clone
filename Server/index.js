@@ -69,7 +69,7 @@ const corsOptions = {
         ];
         
         if (!origin) return callback(null, true); // Allow requests with no origin
-        
+
         const isAllowed = allowedOrigins.some(allowed => {
             if (allowed instanceof RegExp) {
                 return allowed.test(origin);
@@ -89,9 +89,7 @@ const corsOptions = {
         'Authorization',
         'X-Requested-With',
         'Accept',
-        'Origin',
-        'Access-Control-Allow-Headers',
-        'Access-Control-Allow-Origin'
+        'Origin'
     ],
     credentials: true,
     preflightContinue: false,
