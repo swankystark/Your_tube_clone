@@ -23,8 +23,13 @@ export const login = (userData) => async (dispatch) => {
         // Return the user data for potential further use
         return data;
     } catch (error) {
-        console.error('Login Error:', error);
-        // Handle login error
+        console.error('Login Error:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        
+        // Re-throw the error for the component to handle
         throw error;
     }
 };

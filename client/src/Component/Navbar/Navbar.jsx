@@ -22,9 +22,12 @@ const Navbar = ({ toggledrawer, seteditcreatechanelbtn }) => {
     const google_login = useGoogleLogin({
         onSuccess: async (tokenResponse) => {
             try {
+                console.log('Google OAuth Success:', tokenResponse);
+                
                 const userInfo = await axios.get(
-                    `https://www.googleapis.com/oauth2/v1/userinfo?access_token=${tokenResponse.access_token}`, 
+                    'https://www.googleapis.com/oauth2/v1/userinfo',
                     {
+                        params: { access_token: tokenResponse.access_token },
                         headers: {
                             Authorization: `Bearer ${tokenResponse.access_token}`,
                             Accept: 'application/json'
@@ -32,17 +35,33 @@ const Navbar = ({ toggledrawer, seteditcreatechanelbtn }) => {
                     }
                 );
 
-                // Dispatch login with user email directly
-                dispatch(login({ 
-                    email: userInfo.data.email, 
+                console.log('Google User Info:', userInfo.data);
+
+                // Dispatch login with user data
+                const loginData = {
+                    email: userInfo.data.email,
                     name: userInfo.data.name,
+                    googleId: userInfo.data.id,
                     sessionTimestamp: Date.now()
-                }));
+                };
+
+                await dispatch(login(loginData));
             } catch (error) {
-                console.error("Login error:", error);
+                console.error('Login Error:', {
+                    message: error.message,
+                    response: error.response?.data,
+                    status: error.response?.status,
+                    stack: error.stack
+                });
+                
+                // Show user-friendly error message
+                alert('Login failed. Please try again later.');
             }
         },
-        onError: (error) => console.log("Login Failed", error)
+        onError: (error) => {
+            console.error('Google OAuth Error:', error);
+            alert('Google login failed. Please try again.');
+        }
     });
 
     useEffect(() => {

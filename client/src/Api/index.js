@@ -120,15 +120,23 @@ const handleApiError = (error) => {
     throw error;
 };
 
-// Update login to include googleId and unique session identifier
-export const login = (authdata) => {
+// Authentication endpoints
+export const login = async (authdata) => {
     console.log('Login attempt with data:', authdata);
-    return axios.post("http://localhost:5000/user/login", {
-        email: authdata.email,
-        name: authdata.name,
-        googleId: authdata.googleId,
-        sessionTimestamp: authdata.sessionTimestamp || Date.now()
-    }).catch(handleApiError);
+    try {
+        const response = await API.post('/user/login', authdata);
+        if (response.data) {
+            localStorage.setItem('Profile', JSON.stringify(response.data));
+        }
+        return response;
+    } catch (error) {
+        console.error('Login API Error:', {
+            message: error.message,
+            response: error.response?.data,
+            status: error.response?.status
+        });
+        throw error;
+    }
 };
 
 export const updatechaneldata=(id,updatedata)=>API.patch(`/user/update/${id}`,updatedata).catch(handleApiError);
