@@ -61,7 +61,7 @@ app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 
 // CORS Configuration with credentials support
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://*.onrender.com'],
+    origin: ['http://localhost:3000', 'http://127.0.0.1:3000', 'https://your-tube-clone-1-7fms.onrender.com', 'https://your-tube-project.netlify.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
@@ -78,7 +78,7 @@ app.get('/',(req,res)=>{
 // Socket.io Configuration
 const io = new Server(server, {
     cors: {
-        origin: ["http://localhost:3000", "http://localhost:5000", "https://*.onrender.com"],
+        origin: ["http://localhost:3000", "http://localhost:5000", "https://your-tube-clone-1-7fms.onrender.com", "https://your-tube-project.netlify.app"],
         methods: ["GET", "POST"],
         allowedHeaders: ["Authorization"],
         credentials: true
