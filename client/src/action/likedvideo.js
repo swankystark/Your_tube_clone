@@ -1,4 +1,4 @@
-import * as api from "../Api";
+import * as api from "../api";
 export const addtolikedvideo=(likedvideodata)=>async(dispatch)=>{
     try {
         const {data}=await api.addtolikevideo(likedvideodata)

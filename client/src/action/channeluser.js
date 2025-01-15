@@ -1,4 +1,4 @@
-import * as api from "../Api";
+import * as api from "../api";
 
 export const fetchallchannel=()=>async(dispatch)=>{
     try {

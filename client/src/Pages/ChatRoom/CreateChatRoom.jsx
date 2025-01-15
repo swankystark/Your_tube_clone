@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { createChatRoom } from '../../Api';
+import { createChatRoom } from '../../api';
 import { toast } from 'react-toastify';
 import './ChatRoomList.css';
 

@@ -1,4 +1,4 @@
-import * as API from '../Api';
+import * as api from '../api';
 
 export const login = (userData) => async (dispatch) => {
     try {
@@ -6,7 +6,7 @@ export const login = (userData) => async (dispatch) => {
         const sessionTimestamp = Date.now();
         
         // Make API call to login
-        const { data } = await API.login({
+        const { data } = await api.login({
             ...userData,
             sessionTimestamp
         });

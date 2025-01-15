@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { getUserChatRooms, createChatRoom, deleteChatRoom } from '../../Api';
+import { getUserChatRooms, createChatRoom, deleteChatRoom } from '../../api';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
