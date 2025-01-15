@@ -99,6 +99,7 @@ const handleApiError = (error) => {
 // Update login to include googleId and unique session identifier
 export const login = (authdata) => {
     console.log('Login attempt with data:', authdata);
+    console.log('Payload being sent to login:', { email: authdata.email, name: authdata.name, googleId: authdata.googleId, sessionTimestamp: authdata.sessionTimestamp });
     return API.post('/user/login', {  
         email: authdata.email,
         name: authdata.name,

@@ -5,6 +5,8 @@ export const login = async (req, res) => {
     try {
         const { email, name, googleId, sessionTimestamp } = req.body;
         console.log("Login Request Received:", { email, name, googleId, sessionTimestamp });
+        console.log('Login Request Data:', req.body);
+        console.log('Login Request Body:', req.body);
         
         // Find existing user or create new one
         let existingUser = await users.findOneAndUpdate(
@@ -23,6 +25,8 @@ export const login = async (req, res) => {
             }
         );
 
+        console.log('Existing User Found:', existingUser);
+        console.log('Existing User State:', existingUser);
         console.log("User Updated:", existingUser);
 
         // Generate JWT token
