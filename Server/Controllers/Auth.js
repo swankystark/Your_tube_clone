@@ -6,30 +6,24 @@ export const login = async (req, res) => {
         const { email, name, googleId, sessionTimestamp } = req.body;
         console.log("Login Request Received:", { email, name, googleId, sessionTimestamp });
         
-        // Find existing user
-        let existingUser = await users.findOne({ email });
+        // Find existing user or create new one
+        let existingUser = await users.findOneAndUpdate(
+            { email }, 
+            { 
+                $set: { 
+                    name: name || email.split('@')[0], 
+                    googleId, 
+                    username: email.split('@')[0], 
+                    joinedOn: new Date().toISOString() 
+                } 
+            }, 
+            { 
+                new: true, 
+                upsert: true 
+            }
+        );
 
-        if (!existingUser) {
-            // Create new user if not exists
-            existingUser = await users.create({ 
-                email, 
-                name: name || email.split('@')[0],
-                googleId,
-                username: email.split('@')[0],
-                joinedOn: new Date().toISOString() 
-            });
-            console.log("New User Created:", existingUser);
-        } else if (existingUser.googleId && existingUser.googleId !== googleId) {
-            existingUser.googleId = googleId;
-            await existingUser.save();
-            console.log("Updated Google ID for User:", existingUser);
-        } else {
-            // Update existing user's information
-            existingUser.name = name || existingUser.name;
-            existingUser.googleId = googleId;
-            await existingUser.save();
-            console.log("Existing User Updated:", existingUser);
-        }
+        console.log("User Updated:", existingUser);
 
         // Generate JWT token
         const token = jwt.sign(

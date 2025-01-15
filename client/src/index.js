@@ -11,14 +11,43 @@ import { GoogleOAuthProvider } from '@react-oauth/google';
 import Reducers from './Reducers';
 const store=createstore(Reducers,compose(applyMiddleware(thunk)));
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(
 
+const handleLogin = async (response) => {
+    const { profileObj } = response; // Assuming you're using Google Login
+    const { email, name, googleId } = profileObj;
+
+    try {
+        const res = await fetch('https://your-backend-url/user/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: profileObj.email,
+                name: profileObj.name,
+                googleId: profileObj.googleId,
+                sessionTimestamp: new Date().toISOString(),
+            }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+            // Handle successful login, e.g., store token, redirect
+        } else {
+            console.error("Login failed:", data.message);
+        }
+    } catch (error) {
+        console.error("Error during login:", error);
+    }
+};
+
+root.render(
   <Provider store={store}>
     <GoogleOAuthProvider clientId="899100000328-t7vnv2icphs4n95qmi0lfesobk0jaivq.apps.googleusercontent.com">
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-  </GoogleOAuthProvider>
+      <React.StrictMode>
+        <App handleLogin={handleLogin} />
+      </React.StrictMode>
+    </GoogleOAuthProvider>
   </Provider>
 );
 
