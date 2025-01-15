@@ -6,7 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
 import { applyMiddleware,compose } from 'redux';
 import {legacy_createStore as createstore} from "redux"
-import thunk from 'redux-thunk';
+import {thunk} from 'redux-thunk';
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import Reducers from './Reducers';
 const store=createstore(Reducers,compose(applyMiddleware(thunk)));
@@ -17,7 +17,7 @@ const handleLogin = async (response) => {
     const { email, name, googleId } = profileObj;
 
     try {
-        const res = await fetch('https://your-backend-url/user/login', {
+        const res = await fetch('https://your-tube-clone-2-hrmk.onrender.com/user/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
