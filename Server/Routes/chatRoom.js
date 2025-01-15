@@ -5,7 +5,7 @@ import {
     getChatRoomMessages,
     sendChatMessage,
     deleteChatRoom
-} from '../Controllers/ChatRoom.js';
+} from '../Controllers/chatRoom.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();

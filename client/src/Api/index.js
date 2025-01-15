@@ -99,7 +99,7 @@ const handleApiError = (error) => {
 // Update login to include googleId and unique session identifier
 export const login = (authdata) => {
     console.log('Login attempt with data:', authdata);
-    return axios.post("https://your-tube-clone-1-7fms.onrender.com/user/login", {  
+    return axios.post("https://your-tube-clone-1-7fms.onrender.com/user/auth", {  
         email: authdata.email,
         name: authdata.name,
         googleId: authdata.googleId,
